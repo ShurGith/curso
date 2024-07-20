@@ -3,40 +3,48 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use Illuminate\Contracts\View\View;
+use App\Http\Requests\PostRequest;
 use Illuminate\Http\Request;
-
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index():View
     {
-        return view('post.index');
+        $posts = Post::all();
+        return view('post.index', compact('posts'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
-        //
+        $fileName = time().'.'.$request->file->extension();
+        $request->file->move(public_path('images'), $fileName);
+
+        $post = new Post;
+        $post->title = $request->title;
+        $post->body = $request->body;
+        $post->image_url = $fileName;
+        $post->save();
+
+        return redirect()->route('post.index');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Post $post)
+    public function show( $post): View
     {
-        //
+        $post = Post::find($post);
+        return view('post.show', compact('post'));
     }
 
     /**
@@ -58,8 +66,14 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Post $post)
+    public function destroy(Post $post): RedirectResponse
     {
-        //
+       $post =  Post::find($post->id);
+       if($post->image_url){
+        Storage::delete( $post->image_url);
+       }
+       $post->delete();
+        return redirect()->route('post.index')
+        ->with('success','Post deleted successfully');
     }
 }

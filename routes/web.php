@@ -23,6 +23,7 @@ require __DIR__.'/auth.php';
 
 Route::get('/posts',[PostController::class, 'index'])->name('post.index');
 Route::get('/post/create',[PostController::class, 'create'])->name('post.create');
+Route::get('/post/show/{post}',[PostController::class, 'show'])->name('post.show');
 Route::post('/post/store',[PostController::class, 'store'])->name('post.store');
-Route::delete('/post/delete',[PostController::class, 'delete'])->name('post.delete');
+Route::delete('/post/delete/{post}',[PostController::class, 'destroy'])->name('post.delete');
 
