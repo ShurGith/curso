@@ -25,9 +25,9 @@
                         @enderror
                       </div>
                       <div class="col-span-2">
-                          <label for="file" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Imagen</label>
-                          <input id="file" type="file" name="file"  class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write product description here"></input>
-                          @error('file')
+                          <label for="image_url" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Imagen</label>
+                          <input id="image_url" type="file" name="image_url"  class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write product description here"></input>
+                          @error('image_url')
                           <p style="color:red;">$error</p>
                          @enderror
                       </div>
@@ -37,6 +37,6 @@
                   </button>
               </form>
         </div>
-        <img class="w-1/4" src="/storage/{{ $post->image_url }}" alt="" />
+        <img class="w-1/4" src="/storage/images/{{ $post->image_url }}" alt="" />
     </div>
 </x-app-layout>

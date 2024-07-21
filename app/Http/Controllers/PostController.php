@@ -24,18 +24,20 @@ class PostController extends Controller
 
     public function store(PostRequest $request)
     {
-        if($request->hasFile('file')){
-            $file= Storage::putFile('public/images', $request->file);
-            $fileData = str_replace('public/',"",$file);
+        $fileData="";
+        if($request->hasFile('image_url')){
+            $file= Storage::putFile('public/images', $request->image_url);
+            $fileData = str_replace('public/images/',"",$file);
         }
 
-        $post = new Post;
-        $post->title = $request->title;
-        $post->body = $request->body;
-        $post->image_url = $fileData;
-        $post->save();
+        $entrada = new Post;
+        $entrada->title = $request->title;
+        $entrada->body = $request->body;
+        $entrada->image_url = $fileData;
+        $entrada->save();
 
-        return redirect()->route('post.index');
+        return redirect()->route('post.index')
+        ->with('success','Post CREADO successfully');
     }
 
     public function show( $post): View
@@ -53,29 +55,30 @@ class PostController extends Controller
     public function update(PostRequest $request, Post $post)
     {
         $post = Post::find($post->id);
-        $fileName = $post->image_url;
-        if($request->hasFile('file')){
-            unlink('storage/' . $post->image_url);
-            $file= Storage::putFile('public/images', $request->file);
-            $fileData = str_replace('public/',"",$file);
+        $fileData = $post->image_url ;
+        if($request->hasFile('image_url')){
+             if($post->image_url){
+                 unlink('storage/images/' . $post->image_url);
+             }
+            $file= Storage::putFile('public/images', $request->image_url);
+            $fileData = str_replace('public/images/',"",$file);
         }
-        $post->title = $request->title;
-        $post->body = $request->body;
+
+        $post->update($request->all());
         $post->image_url = $fileData;
-        //$post->update($request->all());
         $post->save();
-        return redirect()->route('post.index');
-        //return dd($post);
+        return redirect()->route('post.index')
+        ->with('success','Post ACTUALIZADO successfully');
     }
 
     public function destroy(Post $post): RedirectResponse
     {
        $post =  Post::find($post->id);
        if($post->image_url){
-         unlink(public_path('images/'. $post->image_url));
+         unlink(public_path('storage/images/'. $post->image_url));
        }
        $post->delete();
         return redirect()->route('post.index')
-        ->with('success','Post deleted successfully');
+        ->with('borrado','Post BORRADO successfully');
     }
 }
