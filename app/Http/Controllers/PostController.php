@@ -10,9 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 class PostController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index():View
     {
         $posts = Post::all();
@@ -26,51 +24,55 @@ class PostController extends Controller
 
     public function store(PostRequest $request)
     {
-        $fileName = time().'.'.$request->file->extension();
-        $request->file->move(public_path('images'), $fileName);
+        if($request->hasFile('file')){
+            $file= Storage::putFile('public/images', $request->file);
+            $fileData = str_replace('public/',"",$file);
+        }
 
         $post = new Post;
         $post->title = $request->title;
         $post->body = $request->body;
-        $post->image_url = $fileName;
+        $post->image_url = $fileData;
         $post->save();
 
         return redirect()->route('post.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show( $post): View
     {
         $post = Post::find($post);
         return view('post.show', compact('post'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Post $post)
+    public function edit($post): View
     {
-        //
+        $post = Post::find($post);
+        return view('post.edit', compact('post'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Post $post)
+    public function update(PostRequest $request, Post $post)
     {
-        //
+        $post = Post::find($post->id);
+        $fileName = $post->image_url;
+        if($request->hasFile('file')){
+            unlink('storage/' . $post->image_url);
+            $file= Storage::putFile('public/images', $request->file);
+            $fileData = str_replace('public/',"",$file);
+        }
+        $post->title = $request->title;
+        $post->body = $request->body;
+        $post->image_url = $fileData;
+        //$post->update($request->all());
+        $post->save();
+        return redirect()->route('post.index');
+        //return dd($post);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Post $post): RedirectResponse
     {
        $post =  Post::find($post->id);
        if($post->image_url){
-        Storage::delete( $post->image_url);
+         unlink(public_path('images/'. $post->image_url));
        }
        $post->delete();
         return redirect()->route('post.index')

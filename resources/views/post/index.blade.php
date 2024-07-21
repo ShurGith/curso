@@ -81,7 +81,7 @@
                    Cuerpo
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Edit
+                  Acciones
                 </th>
             </tr>
         </thead>
@@ -90,7 +90,7 @@
             <tr class="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     <a href="#">
-                        <img class="max-w-xs h-auto" src="{{ asset('images/'.$post->image_url) }}" alt="" />
+                        <img class="max-w-xs h-auto" src="/storage/{{ $post->image_url }}" alt="" />
                     </a>
                 </th>
                 <td class="px-6 py-4">
@@ -103,6 +103,7 @@
                 </td>
                 <td class="flex justify-center content-center items-center gap-2">
                     <a href="{{ route('post.show', $post->id) }}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Ver</a>
+                    <a href="{{ route('post.edit', $post->id) }}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
                     <form method="POST" action="{{ route('post.delete', $post->id) }}">
                     @csrf
                     @method('DELETE')
