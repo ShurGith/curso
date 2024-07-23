@@ -147,7 +147,7 @@
                                         </p>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <div class="border flex gap-2 size-full">
+                                        <div class="flex gap-2 size-full">
                                             <a href="{{ route('post.show', $post->id) }}"
                                                 class="font-medium text-white px-4 py-2 bg-blue-600 rounded dark:text-blue-500 hover:underline">Ver</a>
                                             <a href="{{ route('post.edit', $post->id) }}"
